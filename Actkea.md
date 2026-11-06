@@ -150,7 +150,9 @@ Afegir una captura del fitxer de configuració obert a la terminal o editor.
 
 **Captura:**
 
+
 ---
+
 
 # 4. Bloc 3 – Assignació estàtica i reserves MAC
 
