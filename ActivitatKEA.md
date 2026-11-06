@@ -1,77 +1,116 @@
-# AA2 – Anàlisi i Configuració de Kea DHCP4
+# AA2 – Avaluació: Anàlisi Kea DHCP
 
-**Projecte:** Implementació de servei DHCP amb Kea DHCP4  
-**Empresa:** TechMataró SL  
-**Autor:** Biel Clave  
 **Mòdul:** M0227 – Serveis de Xarxa  
-**Entorn:** Linux (Ubuntu Server / Debian), Visual Studio Code  
+**Alumne:** Biel Clave  
+**Curs:** SMX2  
+**Empresa:** TechMataró SL  
+**Data:** 04/11/2026
 
 ---
 
-## 1. Introducció
+# 1. Introducció
 
-Aquest projecte recull la configuració, gestió i verificació del servei **Kea DHCP4** (desenvolupat per ISC) en un entorn corporatiu per a l'empresa **TechMataró SL**. L'objectiu principal és desplegar l'adreçament IP dinàmic, gestionar reserves d'adreces estàtiques mitjançant adreces MAC, i establir procediments de diagnòstic i manteniment del servei.
+En aquesta activitat es treballarà la instal·lació, configuració i gestió del servei Kea DHCP4 en un sistema Linux. L'objectiu és aprendre a configurar l'adreçament IP dinàmic, crear reserves d'adreces IP i comprovar el funcionament del servidor mitjançant diferents eines de diagnòstic.
 
----
-
-## 2. Bloc 1 – Fonaments del protocol i anàlisi de tràfic
-
-### 2.1 Procés de negociació DHCP (DORA)
-
-El procés de negociació DHCP segueix el flux de 4 passos conegut com a **DORA**:
-
-1. **Discover:** El client envia una petició per localitzar servidors DHCP disponibles a la xarxa.
-2. **Offer:** El servidor respon oferint una adreça IP disponible i paràmetres bàsics.
-3. **Request:** El client sol·licita formalment l'assignació de l'adreça IP ofeta.
-4. **Acknowledge (ACK):** El servidor confirma l'assignació de l'adreça IP i li atorga la cessió (*lease*).
-
-#### Tipus de transmissió (Broadcast / Unicast) en xarxa local sense DHCP Relay:
-- **Discover:** `Broadcast` (El client no té IP assignada ni coneix la IP del servidor).
-- **Offer:** `Broadcast` (o `Unicast` segons la implementació de la pila TCP/IP de la targeta de xarxa).
-- **Request:** `Broadcast` (Comunica a tots els servidors quin ha estat l'oferta acceptada).
-- **Acknowledge:** `Broadcast` / `Unicast` (Confirmació final de la concessió).
+L'activitat es desenvolupa en l'escenari d'una empresa anomenada TechMataró SL, que necessita un servidor DHCP per gestionar les adreces IP dels seus dispositius.
 
 ---
 
-### 2.2 Ports i capçaleres DHCP
+# 2. Bloc 1 – Fonaments del protocol i anàlisi de tràfic
 
-DHCP opera sobre el protocol de transport **UDP**:
+## 2.1 Procés de negociació DHCP (DORA)
+
+El procés DORA és el procediment que segueix un client per obtenir una adreça IP automàticament.
+
+- **Discover:** el client busca un servidor DHCP disponible.
+- **Offer:** el servidor ofereix una adreça IP al client.
+- **Request:** el client sol·licita l'adreça IP que vol utilitzar.
+- **Acknowledge:** el servidor confirma l'assignació de l'adreça IP.
+
+### Broadcast i Unicast
+
+Indicar quines fases del procés DORA utilitzen Broadcast i quines Unicast en una xarxa local sense DHCP Relay.
+
+**Resposta:**
+- **Discover:** Utilitza **Broadcast** (el client no té IP assignada ni sap quina és la IP del servidor).
+- **Offer:** Utilitza **Broadcast** (o Unicast depenent de la pila de xarxa, però habitualment Broadcast ja que pot no tenir IP directa).
+- **Request:** Utilitza **Broadcast** (perquè tots els servidors sàpiguen quina oferta s'ha acceptat).
+- **Acknowledge:** Utilitza **Broadcast** o **Unicast** (confirmació final de la concessió).
+
+---
+
+## 2.2 Ports i capçaleres DHCP
+
+DHCP utilitza el protocol UDP per comunicar el client amb el servidor.
+
 - **Port UDP del client:** `68`
 - **Port UDP del servidor:** `67`
 
-#### Identificació del client
-El camp de la capçalera DHCP que identifica unívocament la interfície de xarxa del client és **`chaddr`** (*Client Hardware Address*), que conté l'adreça física MAC.
+### Identificació del client
+
+Indicar quin camp de la capçalera DHCP permet identificar la targeta de xarxa del client.
+
+**Resposta:**
+El camp de la capçalera DHCP que identifica la targeta de xarxa del client és el camp **`chaddr`** (*Client Hardware Address*), on s'especifica l'adreça física o MAC.
 
 ---
 
-### 2.3 Opcions DHCP (DHCP Options)
+## 2.3 Opcions DHCP
 
-| Opció | Número | Descripció |
-|---|---|---|
-| **Router** | `3` | Gateway o porta d'enllaç per defecte |
-| **DNS** | `6` | Llista de servidors de noms de domini (*Domain Name Servers*) |
-| **Domain Name** | `15` | Domini DNS local per a la resolució de noms de la xarxa |
+Completar la informació de les opcions DHCP utilitzades per transmetre els paràmetres de xarxa.
+
+| Opció | Número |
+|---|---|
+| Router | `3` |
+| DNS | `6` |
+| Domain Name | `15` |
+
+### Evidència pràctica
+
+Afegir una captura de Wireshark o tcpdump on es pugui observar el tràfic DHCP.
+
+**Captura:** *(Inserir captura de Wireshark/tcpdump mostrant paquets DHCP Discover/Offer/Request/ACK)*
 
 ---
 
-## 3. Bloc 2 – Configuració del servidor Kea DHCP4
+# 3. Bloc 2 – Configuració del servidor Kea DHCP
 
-### 3.1 Paràmetres del servei
+## 3.1 Configuració de la interfície i base de dades
 
-- **Interfície d'escolta:** `eth0`
-- **Tipus de base de dades de cessions:** `memfile` (amb persistència activada)
-- **Temps de cessió (valid-lifetime):** 7200 segons (2 hores)
-- **Temps de renovació (renew-timer):** 3600 segons (1 hora)
+El servidor Kea DHCP4 s'ha de configurar perquè escolti les peticions DHCP a través de la interfície de xarxa `eth0`.
+També s'ha d'utilitzar el sistema d'emmagatzematge `memfile` per guardar les cessions DHCP, amb persistència activada.
+
+## 3.2 Paràmetres globals i temps de cessió
+
+Configurar els següents paràmetres:
+
+| Paràmetre | Valor |
+|---|---|
+| valid-lifetime | 7200 segons |
+| renew-timer | 3600 segons |
+
+## 3.3 Configuració de la subxarxa i pool
+
+La xarxa de l'empresa utilitza una subxarxa `192.168.1.0/24`.
+El servidor ha de permetre l'assignació dinàmica d'adreces IP dins del següent rang:
+
 - **Subxarxa:** `192.168.1.0/24`
-- **Pool dinàmic:** `192.168.1.50` – `192.168.1.200`
-- **Gateway:** `192.168.1.1`
-- **DNS Primari:** `1.1.1.1`
-- **DNS Secundari:** `8.8.8.8`
-- **Domini local:** `oficina.local`
+- **Pool dinàmic:** `192.168.1.50 – 192.168.1.200`
 
----
+## 3.4 Opcions de xarxa
 
-### 3.2 Fitxer de configuració complet (`/etc/kea/kea-dhcp4.conf`)
+Configurar les opcions necessàries perquè els clients rebin correctament els paràmetres de xarxa.
+
+| Paràmetre | Valor |
+|---|---|
+| Router | `192.168.1.1` |
+| DNS primari | `1.1.1.1` |
+| DNS secundari | `8.8.8.8` |
+| Domini local | `oficina.local` |
+
+## 3.5 Fitxer de configuració kea-dhcp4.conf
+
+Redactar el fitxer JSON complet comú de configuració:
 
 ```json
 {
