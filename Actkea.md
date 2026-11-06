@@ -157,7 +157,7 @@ sudo kea-dhcp4 -t /etc/kea/kea-dhcp4.conf
 
 Captura de la terminal amb el resultat de la validació:
 
-![Validació del fitxer](/M0227_RA1_Biel_Clave/img/Captura%202.png)
+![Validació del fitxer](/img/2.png)
 
 ---
 
