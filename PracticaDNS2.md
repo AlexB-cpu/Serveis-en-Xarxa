@@ -37,7 +37,7 @@ nslookup www.xtec.cat
 dig @8.8.8.8 NS upf.edu
 ```
 
-![alt text](<img/Captura de pantalla 2026-11-24 170817.png>) ![alt text](<img/Captura de pantalla 2026-11-24 170846.png>) [alt text](pr_ctica_consultes_dns_i_mdns.md)
+![alt text](<img/Captura de pantalla 2026-11-24 170846.png>)
 
 **Observació:** la resposta no porta el flag `aa`, per tant no és autoritativa. Un dels servidors de noms obtinguts és `ns2.upf.edu`, que s'utilitza als apartats 3 i 5.
 
@@ -52,7 +52,7 @@ dig @8.8.8.8 NS upf.edu
 dig @ns2.upf.edu www.upf.edu
 ```
 
-![Captura de pantalla de la comanda dig @ns2.upf.edu www.upf.edu](img/Captura%20de%20pantalla%202026-11-24%20170849.png)
+![alt text](<img/Captura de pantalla 2026-11-24 170849.png>)
 
 **Observació:** ara apareix el flag `aa` (*authoritative answer*), de manera que la resposta ve del servidor responsable del domini `upf.edu`.
 
@@ -67,7 +67,7 @@ dig @ns2.upf.edu www.upf.edu
 dig MX upf.edu +short
 ```
 
-![Captura de pantalla de la comanda dig MX upf.edu +short](img/Captura%20de%20pantalla%202026-11-24%20171218.png)
+
 
 **Observació:** els registres MX indiquen quins servidors reben el correu del domini. El valor numèric és la prioritat: s'utilitza primer el més baix.
 
@@ -82,7 +82,7 @@ dig MX upf.edu +short
 dig @ns2.upf.edu escolapia.cat
 ```
 
-![alt text](<img/Captura de pantalla 2026-11-24 171312.png>)
+![alt text](<img/Captura de pantalla 2026-11-24 171255.png>)
 
 **Observació:** el servidor respon `REFUSED` perquè només és autoritatiu per als seus dominis i no accepta consultes recursives per a dominis externs.
 
@@ -96,8 +96,8 @@ dig @ns2.upf.edu escolapia.cat
 ```bash
 dig SOA escolapia.cat
 ```
+![alt text](<img/Captura de pantalla 2026-11-24 171312.png>)
 
-![alt text](<img/Captura de pantalla 2026-11-24 171515.png>)
 
 **Observació:** el SOA identifica el servidor de noms primari, el correu de l'administrador i els temps (serial, refresh, retry, expire i TTL negatiu) que controlen la sincronització de la zona.
 
