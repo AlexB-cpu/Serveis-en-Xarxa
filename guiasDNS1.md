@@ -60,7 +60,7 @@ ip a
 ```bash
 dig tecnocampus.cat A
 ```
-![alt text](img/1GuiaDNS.png)
+![alt text](<img/2GuiaDNSCaptura de pantalla 2026-11-24 175740.png>)
 **Anàlisi:**
 - **IP de resposta:** `18.172.213.97` (adreça on resol el nom).
 - **TTL:** `<TTL>` segons: temps durant el qual la resposta es pot guardar a la memòria cau abans de tornar a consultar.
@@ -71,7 +71,6 @@ dig tecnocampus.cat A
 ```bash
 dig tecnocampus.cat NS
 ```
-
 ![alt text](img/3GuiaDNS.png)
 
 **Anàlisi:** els servidors de noms **autoritatius** del domini són quatre, i tots pertanyen a **Amazon Route 53** (`awsdns`):

@@ -52,7 +52,7 @@ dig @8.8.8.8 NS upf.edu
 dig @ns2.upf.edu www.upf.edu
 ```
 
-![alt text](<img/Captura de pantalla 2026-11-24 170849.png>)
+![alt text](<img/Captura de pantalla 2026-11-24 171218.png>)
 
 **Observació:** ara apareix el flag `aa` (*authoritative answer*), de manera que la resposta ve del servidor responsable del domini `upf.edu`.
 
